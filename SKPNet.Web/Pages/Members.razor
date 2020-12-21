@@ -1,0 +1,36 @@
+﻿@page "/members"
+<h3>Members</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Create Date</th>
+            <th>Password</th>
+            <th>SaltKey</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var member in members)
+        {
+            <tr>
+                <td>@member.Email</td>
+                <td>@member.MobileNumber</td>
+                <td>@member.CreateDate</td>
+                <td>@member.Password</td>
+                <td>@member.PasswordSalt</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private IEnumerable<Member> members;
+    protected override void OnInitialized()
+    {
+        GenericHttpClient httpClient = new GenericHttpClient();
+        members = httpClient.GetJsonAsync<Member>("https://localhost:44359/api/account").Result;
+        base.OnInitialized();
+    }
+
+}

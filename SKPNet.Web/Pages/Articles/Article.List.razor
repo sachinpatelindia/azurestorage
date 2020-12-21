@@ -1,0 +1,37 @@
+﻿@page "/articles"
+<h3>Articles</h3>
+
+<button type="button" class="btn btn-primary" @onclick="NavigateToCreateArticle">Create Article</button>
+<button type="button" class="btn btn-primary" @onclick="NavigateToEditArticle">Edit Article</button>
+
+@foreach (var article in articles)
+{
+    <h4>@article.Title</h4>
+    <p>
+        @{
+            MarkupString stringdata = new MarkupString(article.Content);
+        }
+        @stringdata
+    </p>
+}
+@code {
+    private IEnumerable<ArticleModel> articles;
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+    protected override void OnInitialized()
+    {
+        GenericHttpClient httpClient = new GenericHttpClient();
+        articles = httpClient.GetJsonAsync<ArticleModel>("https://localhost:44359/api/Articles").Result;
+        base.OnInitialized();
+    }
+
+    private void NavigateToCreateArticle()
+    {
+        NavigationManager.NavigateTo("/article/create");
+    }
+    private void NavigateToEditArticle()
+    {
+        NavigationManager.NavigateTo("/article/edit");
+    }
+
+}

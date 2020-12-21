@@ -1,0 +1,44 @@
+﻿@page "/article/create"
+
+<h3>Article.Create</h3>
+<EditForm Model="articleModel" onValidateSubmit="ValidateFormSubmitted" OnSubmit="FormSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <InputText id="title" @bind-Value="@articleModel.Title"></InputText>
+    <br />
+    <InputText id="lname" @bind-Value="@articleModel.Content"></InputText>
+    <br />
+    <input type="submit" value="Save" />
+</EditForm>
+
+<br />
+<hr />
+<button type="button" class="btn btn-primary" @onclick="BackToArticle">Back to Articles</button>
+@code {
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+    private ArticleModel articleModel;
+    GenericHttpClient httpClient;
+
+    protected override void OnInitialized()
+    {
+        articleModel = new ArticleModel();
+        httpClient = new GenericHttpClient();
+        base.OnInitialized();
+    }
+
+    private void FormSubmit()
+    {
+        var json = Newtonsoft.Json.JsonConvert.SerializeObject(articleModel);
+        var data = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+        var result= httpClient.PostAsync("https://localhost:44359/api/Articles", data);
+        if (result.Result.StatusCode == System.Net.HttpStatusCode.OK)
+            NavigationManager.NavigateTo("/articles");
+    }
+
+    private void BackToArticle()
+    {
+        NavigationManager.NavigateTo("/articles");
+    }
+}

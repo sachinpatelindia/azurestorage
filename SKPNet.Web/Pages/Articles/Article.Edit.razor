@@ -1,0 +1,13 @@
+﻿@page "/article/edit"
+<h3>Article.Edit</h3>
+
+<button type="button" class="btn btn-primary" @onclick="BackToArticle">Back to Articles</button>
+@code {
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
+    private void BackToArticle()
+    {
+        NavigationManager.NavigateTo("/articles");
+    }
+}
